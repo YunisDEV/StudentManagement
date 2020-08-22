@@ -13,8 +13,8 @@ class Student:
         return [str(self.id), self.name, self.surname, self.email, self.phone]
 
     def update(self, update_data):
-        for key,value in update_data.items():
-            self. = value
+        for key, value in update_data.items():
+            setattr(self, key, value)
 
 
 def is_email(email):

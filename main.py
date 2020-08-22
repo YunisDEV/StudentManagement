@@ -94,11 +94,11 @@ def save_to_db(prefix=''):
 while True:
     command = input('(StudentManager)>> ')
     # help
-    elif command == 'help':
+    if command == 'help':
         print_help(additionalWait)
 
     # add
-    if command == 'add':
+    elif command == 'add':
         print(colored('INFO: All fields are required', 'cyan'))
         id_code = None
         while not id_code:
