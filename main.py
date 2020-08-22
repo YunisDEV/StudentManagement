@@ -12,7 +12,7 @@ from prints import newton, print_help
 dbFileName = "data.json"
 
 # Daha professional görünməsi üçün gözləmə zamanı:)
-additionalWait = True
+additionalWait = False
 
 # terminalı təmizləmək üçün əmr.Linux da clear, Windowsda cls
 clearString = None
@@ -25,8 +25,6 @@ else:
 # terminalı təmizlə
 os.system(clearString)
 
-# başlıq
-print(Figlet(font="slant").renderText('Student\nManager'))
 
 # şagird siyahısı
 studentList = []
@@ -44,6 +42,8 @@ def read_json_db():
         jsonFileWrite = open(dbFileName, 'wt')
         jsonFileWrite.write('[]')
         jsonFileWrite.close()
+        if additionalWait:
+            newton(2, 'Fixing', 'cyan')
         print(colored('...DB is ready', 'green'))
     # Fayl varsa içindəki json array-a çevirib sonra içindəki obyektləri Student obyektinə çevir
     else:
@@ -52,12 +52,16 @@ def read_json_db():
         for i in jsonArray:
             studentList.append(
                 Student(i["id"], i["name"], i["surname"], i["email"], i["phone"]))
-
+        if additionalWait:
+            newton(2, 'Loading', 'cyan')
         print(colored('Loaded data successfully!!!', 'green'))
 
 
 # JSON faylındakı məlumatların oxunması
 read_json_db()
+
+# başlıq
+print(Figlet(font="slant").renderText('Student\nManager'))
 
 print_help()
 
@@ -71,6 +75,8 @@ def save_to_db(prefix=''):
         jsonFileWrite = open(dbFileName, 'wt')
         jsonFileWrite.write('[]')
         jsonFileWrite.close()
+        if additionalWait:
+            newton(2, 'Fixing', 'cyan')
         print(colored('...DB is ready', 'green'))
     # studentList də olan obyektləri dict-ə çevirib JSON a yaz
     else:
@@ -80,12 +86,14 @@ def save_to_db(prefix=''):
             jsonList.append(i.obj())
         jsonFileWrite.write(json.dumps(jsonList))
         jsonFileWrite.close()
+        if additionalWait:
+            newton(1, 'Saving', 'cyan')
         print(colored(prefix+'Saved data successfully!!!', 'green'))
 
 
 while True:
     command = input('(StudentManager)>> ')
-    #add
+    # add
     if command == 'add':
         print(colored('INFO: All fields are required', 'cyan'))
         id_code = None
@@ -114,6 +122,8 @@ while True:
             if phone:
                 break
         x = createStudent(id_code, name, surname, email, phone)
+        if additionalWait:
+            newton(5, 'Creating Student', 'cyan')
         if len(x[0]) > 0:
             for i in x[0]:
                 print(colored(i, 'red'))
@@ -124,16 +134,18 @@ while True:
             if autosave:
                 save_to_db('Autosave: ')
 
-    #TEST ÜÇÜN newton
+    # TEST ÜÇÜN newton
     elif command[0:6] == 'newton':
         cmdArr = command.split(' ')
         newton(cmdArr[1], cmdArr[2], cmdArr[3])
 
-    #showone
+    # showone
     elif command == 'showone':
         _id = input('Enter ID: ')
         table = PrettyTable()
         table.field_names = ['ID', 'Name', 'Surname', 'Email', 'Phone']
+        if additionalWait:
+            newton(1, 'Fetching', 'cyan')
         for i in studentList:
             if i.id == int(_id):
                 table.add_row(i.show())
@@ -141,21 +153,25 @@ while True:
         if autosave:
             save_to_db('Autosave: ')
 
-    #show
+    # show
     elif command == 'show':
         table = PrettyTable()
         table.field_names = ['ID', 'Name', 'Surname', 'Email', 'Phone']
+        if additionalWait:
+            newton(3, 'Fetching', 'cyan')
         for i in studentList:
             table.add_row(i.show())
         print(table)
         if autosave:
             save_to_db('Autosave: ')
 
-    #remove
+    # remove
     elif command == 'remove':
         _id = input('Enter ID: ')
         if _id.isnumeric():
             found = False
+            if additionalWait:
+                newton(1, 'Removing', 'cyan')
             for st in studentList:
                 if st.id == int(_id):
                     studentList.remove(st)
@@ -169,30 +185,32 @@ while True:
         if autosave:
             save_to_db('Autosave: ')
 
-    #save
+    # save
     elif command == 'save':
         save_to_db()
 
-    #reload
+    # reload
     elif command == 'reload':
         studentList = []
         read_json_db()
 
-    #help
+    # help
     elif command == 'help':
         print_help()
 
-    #drop
+    # drop
     elif command == 'drop':
         jsonFileWrite = open(dbFileName, 'wt')
         jsonFileWrite.write('[]')
+        if additionalWait:
+            newton(1, 'Dropping', 'cyan')
         jsonFileWrite.close()
 
-    #clear
+    # clear
     elif command == 'clear':
         os.system(clearString)
 
-    #autosave
+    # autosave
     elif command == 'autosave':
         if autosave:
             autosave = False
@@ -200,12 +218,12 @@ while True:
         else:
             autosave = True
             print(colored('Turned on autosave.', 'cyan'))
-    
-    #exit
+
+    # exit
     elif command == 'exit':
         break
 
-    #command yoxdursa
+    # command yoxdursa
     else:
         if len(command) > 0:
             print(colored('Cannot find command!', 'red'))
