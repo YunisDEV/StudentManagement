@@ -51,7 +51,7 @@ def print_help(additionalWait):
     print(colored('"show" for show all students.', 'cyan'))
     print(colored('"showone" for show one student with ID.', 'cyan'))
     print(colored('"remove" for remove student with ID.', 'cyan'))
-    print(colored('"update" for update student with ID.', 'cyan'))
+    print(colored('"update" for update student with ID and key parameters.', 'cyan'))
     print(colored('"save" for save students to db.', 'cyan'))
     print(colored('"autosave" for turn on/off auto save.', 'cyan'))
     print(colored('"reload" for reload students from db.', 'cyan'))

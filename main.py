@@ -186,19 +186,21 @@ while True:
 
     # update
     elif command[0:6] == 'update':
-        _id = command.split(' ')[1]
-        cmdArr = command.split(' ')[2:]
-        update_object = {}
-        if _id.isnumeric():
-            for i in studentList:
-                if i.id == int(_id):
-                    for key in cmdArr:
-                        update_object[key] = input(
-                            key.capitalize()+" ("+i.obj()[key]+"): ")
-                    i.update(update_object)
+        if len(command.split(' '))>=3:
+            _id = command.split(' ')[1]
+            cmdArr = command.split(' ')[2:]
+            update_object = {}
+            if _id.isnumeric():
+                for i in studentList:
+                    if i.id == int(_id):
+                        for key in cmdArr:
+                            update_object[key] = input(
+                                key.capitalize()+" ("+i.obj()[key]+"): ")
+                        i.update(update_object)
+            else:
+                print(colored('ID should be integer', 'red'))
         else:
-            print(colored('ID should be integer', 'red'))
-    
+            print(colored('Syntax for update should be like: update <id> <key1> <key2>','red'))
     # save
     elif command == 'save':
         save_to_db()
