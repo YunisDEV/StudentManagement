@@ -106,7 +106,15 @@ while True:
     elif command == 'newton':
         newton_toy()
     elif command == 'showone':
-        pass
+        _id = input('Enter ID: ')
+        table = PrettyTable()
+        table.field_names = ['ID', 'Name', 'Surname', 'Email', 'Phone']
+        for i in studentList:
+            if i.id==int(_id):
+                table.add_row(i.show())
+        print(table)
+        if autosave:
+            save_to_db('Autosave: ')
     elif command == 'show':
         table = PrettyTable()
         table.field_names = ['ID', 'Name', 'Surname', 'Email', 'Phone']

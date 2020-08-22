@@ -27,7 +27,10 @@ def is_email(email):
 
 
 def is_phone(phone):
-    return True
+    flag = True
+    if not phone[0:4]=='+994':
+        flag = False
+    return flag
 
 
 def createStudent(_id, _name, _surname, _email, _phone):
