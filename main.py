@@ -6,9 +6,15 @@ from StudentSchema import Student, createStudent
 from prettytable import PrettyTable
 from pyfiglet import Figlet
 from termcolor import colored, cprint
+from prints import newton, print_help
 
+# Dataları saxlayacaq faylın adı
 dbFileName = "data.json"
 
+# Daha professional görünməsi üçün gözləmə zamanı:)
+additionalWait = True
+
+# terminalı təmizləmək üçün əmr.Linux da clear, Windowsda cls
 clearString = None
 
 if os.name == 'nt':
@@ -16,134 +22,114 @@ if os.name == 'nt':
 else:
     clearString = 'clear'
 
-
-def newton_toy():
-    counter = 0
-    while counter < 20:
-        os.system(clearString)
-        if counter % 4 == 0:
-            print("╔════╤╤╤╤════╗")
-            print("║    │││ \\   ║")
-            print("║    │││  O  ║")
-            print("║    OOO     ║")
-        elif counter % 4 == 1:
-            print("╔════╤╤╤╤════╗")
-            print("║    ││││    ║")
-            print("║    ││││    ║")
-            print("║    OOOO    ║")
-        elif counter % 4 == 2:
-            print("╔════╤╤╤╤════╗")
-            print("║   / │││    ║")
-            print("║  O  │││    ║")
-            print("║     OOO    ║")
-        elif counter % 4 == 3:
-            print("╔════╤╤╤╤════╗")
-            print("║    ││││    ║")
-            print("║    ││││    ║")
-            print("║    OOOO    ║")
-        counter += 1
-        time.sleep(0.2)
-    os.system(clearString)
-
-
-def print_help():
-    print(colored('Commands:', 'cyan', attrs=['underline']))
-    print(colored('"help" for get list of commands.', 'cyan'))
-    print(colored('"add" for add new student.', 'cyan'))
-    print(colored('"show" for show all students.', 'cyan'))
-    print(colored('"showone" for show one student with ID.', 'cyan'))
-    print(colored('"remove" for remove student with ID.', 'cyan'))
-    print(colored('"save" for save students to db.', 'cyan'))
-    print(colored('"autosave" for turn on/off auto save.', 'cyan'))
-    print(colored('"reload" for reload students from db.', 'cyan'))
-    print(colored('"drop" for delete all students from db.', 'cyan'))
-    print(colored('"clear" for clear screen.', 'cyan'))
-    print(colored('"exit" for exit app.', 'cyan'))
-
-
+# terminalı təmizlə
 os.system(clearString)
 
+# başlıq
 print(Figlet(font="slant").renderText('Student\nManager'))
 
+# şagird siyahısı
 studentList = []
+
+# Hər dəyişiklikdən sonra save et?
 autosave = False
 
 
 def read_json_db():
+    # Əgər fayl yaradılmayıbsa boş bir arraydan ibarət json faylı yarat
     if not os.path.isfile('./'+dbFileName):
         print(colored('DB file missing...', 'red'))
         jsonFileCreate = open(dbFileName, 'xt')
         print(colored('...Created db.json file...', 'cyan'))
         jsonFileWrite = open(dbFileName, 'wt')
         jsonFileWrite.write('[]')
+        jsonFileWrite.close()
         print(colored('...DB is ready', 'green'))
+    # Fayl varsa içindəki json array-a çevirib sonra içindəki obyektləri Student obyektinə çevir
     else:
         jsonFileRead = open(dbFileName, 'rt')
         jsonArray = json.loads(jsonFileRead.read())
         for i in jsonArray:
             studentList.append(
                 Student(i["id"], i["name"], i["surname"], i["email"], i["phone"]))
+
         print(colored('Loaded data successfully!!!', 'green'))
 
 
+# JSON faylındakı məlumatların oxunması
 read_json_db()
 
 print_help()
 
 
 def save_to_db(prefix=''):
+    # Əgər fayl yaradılmayıbsa boş bir arraydan ibarət json faylı yarat
     if not os.path.isfile('./'+dbFileName):
         print(colored('DB file missing...', 'red'))
         jsonFileCreate = open(dbFileName, 'xt')
         print(colored('...Created db.json file...', 'cyan'))
         jsonFileWrite = open(dbFileName, 'wt')
         jsonFileWrite.write('[]')
+        jsonFileWrite.close()
         print(colored('...DB is ready', 'green'))
+    # studentList də olan obyektləri dict-ə çevirib JSON a yaz
     else:
         jsonFileWrite = open(dbFileName, 'wt')
         jsonList = []
         for i in studentList:
             jsonList.append(i.obj())
         jsonFileWrite.write(json.dumps(jsonList))
+        jsonFileWrite.close()
         print(colored(prefix+'Saved data successfully!!!', 'green'))
 
 
 while True:
     command = input('(StudentManager)>> ')
+    #add
     if command == 'add':
-        print(colored('INFO: All fields are required','cyan'))
+        print(colored('INFO: All fields are required', 'cyan'))
         id_code = None
         while not id_code:
             id_code = input('ID: ')
-            if id_code: break
+            if id_code:
+                break
         name = None
         while not name:
             name = input('Name: ')
-            if name: break
+            if name:
+                break
         surname = None
         while not surname:
             surname = input('Surname: ')
-            if surname: break
+            if surname:
+                break
         email = None
         while not email:
             email = input('Email: ')
-            if email: break
+            if email:
+                break
         phone = None
         while not phone:
             phone = input('Phone: ')
-            if phone: break
+            if phone:
+                break
         x = createStudent(id_code, name, surname, email, phone)
         if len(x[0]) > 0:
             for i in x[0]:
-                print(colored(i,'red'))
+                print(colored(i, 'red'))
             print(colored('Cannot create student!', 'red'))
         else:
             studentList.append(x[1])
             print(colored('Created student successfully.', 'green'))
-        if autosave:
-            save_to_db('Autosave: ')
-    elif command == 'newton':
-        newton_toy()
+            if autosave:
+                save_to_db('Autosave: ')
+
+    #TEST ÜÇÜN newton
+    elif command[0:6] == 'newton':
+        cmdArr = command.split(' ')
+        newton(cmdArr[1], cmdArr[2], cmdArr[3])
+
+    #showone
     elif command == 'showone':
         _id = input('Enter ID: ')
         table = PrettyTable()
@@ -154,6 +140,8 @@ while True:
         print(table)
         if autosave:
             save_to_db('Autosave: ')
+
+    #show
     elif command == 'show':
         table = PrettyTable()
         table.field_names = ['ID', 'Name', 'Surname', 'Email', 'Phone']
@@ -162,44 +150,62 @@ while True:
         print(table)
         if autosave:
             save_to_db('Autosave: ')
+
+    #remove
     elif command == 'remove':
         _id = input('Enter ID: ')
         if _id.isnumeric():
-            print(colored('ID should be integer.','red'))
             found = False
             for st in studentList:
                 if st.id == int(_id):
                     studentList.remove(st)
-                    print(colored('Student deleted.','green'))
+                    print(colored('Student deleted.', 'green'))
                     found = True
                     break
             if not found:
-                print(colored('Cannot find student.','red'))
+                print(colored('Cannot find student.', 'red'))
         else:
-            print(colored('ID should be integer.','red'))
+            print(colored('ID should be integer.', 'red'))
         if autosave:
             save_to_db('Autosave: ')
+
+    #save
     elif command == 'save':
         save_to_db()
+
+    #reload
     elif command == 'reload':
         studentList = []
         read_json_db()
+
+    #help
     elif command == 'help':
         print_help()
+
+    #drop
     elif command == 'drop':
         jsonFileWrite = open(dbFileName, 'wt')
         jsonFileWrite.write('[]')
+        jsonFileWrite.close()
+
+    #clear
     elif command == 'clear':
         os.system(clearString)
+
+    #autosave
     elif command == 'autosave':
         if autosave:
             autosave = False
-            print(colored('Turned off autosave.','cyan'))
+            print(colored('Turned off autosave.', 'cyan'))
         else:
             autosave = True
-            print(colored('Turned on autosave.','cyan'))
+            print(colored('Turned on autosave.', 'cyan'))
+    
+    #exit
     elif command == 'exit':
         break
+
+    #command yoxdursa
     else:
         if len(command) > 0:
-            print(colored('Cannot find command!','red'))
+            print(colored('Cannot find command!', 'red'))
