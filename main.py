@@ -5,6 +5,7 @@ import time
 from StudentSchema import Student, createStudent
 from prettytable import PrettyTable
 from pyfiglet import Figlet
+from termcolor import colored, cprint
 
 dbFileName = "data.json"
 
@@ -46,22 +47,22 @@ def newton_toy():
 
 
 def print_help():
-    print('Commands:')
-    print('"help" for get list of commands.')
-    print('"add" for add new student.')
-    print('"show" for show all students.')
-    print('"showone" for show one student with ID.')
-    print('"remove" for remove student with ID.')
-    print('"save" for save students to db.')
-    print('"autosave" for turn on/off auto save.')
-    print('"reload" for reload students from db.')
-    print('"drop" for delete all students from db.')
-    print('"clear" for clear screen.')
-    print('"exit" for exit app.')
+    print(colored('Commands:', 'cyan', attrs=['underline']))
+    print(colored('"help" for get list of commands.', 'cyan'))
+    print(colored('"add" for add new student.', 'cyan'))
+    print(colored('"show" for show all students.', 'cyan'))
+    print(colored('"showone" for show one student with ID.', 'cyan'))
+    print(colored('"remove" for remove student with ID.', 'cyan'))
+    print(colored('"save" for save students to db.', 'cyan'))
+    print(colored('"autosave" for turn on/off auto save.', 'cyan'))
+    print(colored('"reload" for reload students from db.', 'cyan'))
+    print(colored('"drop" for delete all students from db.', 'cyan'))
+    print(colored('"clear" for clear screen.', 'cyan'))
+    print(colored('"exit" for exit app.', 'cyan'))
 
 
 os.system(clearString)
-# print('===============StudentManager===============')
+
 print(Figlet(font="slant").renderText('Student\nManager'))
 
 studentList = []
@@ -70,19 +71,19 @@ autosave = False
 
 def read_json_db():
     if not os.path.isfile('./'+dbFileName):
-        print('DB file missing...')
+        print(colored('DB file missing...', 'red'))
         jsonFileCreate = open(dbFileName, 'xt')
-        print('...Created db.json file...')
+        print(colored('...Created db.json file...', 'cyan'))
         jsonFileWrite = open(dbFileName, 'wt')
         jsonFileWrite.write('[]')
-        print('...DB is ready')
+        print(colored('...DB is ready', 'green'))
     else:
         jsonFileRead = open(dbFileName, 'rt')
         jsonArray = json.loads(jsonFileRead.read())
         for i in jsonArray:
             studentList.append(
                 Student(i["id"], i["name"], i["surname"], i["email"], i["phone"]))
-        print('Loaded data successfully!!!')
+        print(colored('Loaded data successfully!!!', 'green'))
 
 
 read_json_db()
@@ -92,19 +93,19 @@ print_help()
 
 def save_to_db(prefix=''):
     if not os.path.isfile('./'+dbFileName):
-        print('DB file missing...')
+        print(colored('DB file missing...', 'red'))
         jsonFileCreate = open(dbFileName, 'xt')
-        print('...Created db.json file...')
+        print(colored('...Created db.json file...', 'cyan'))
         jsonFileWrite = open(dbFileName, 'wt')
         jsonFileWrite.write('[]')
-        print('...DB is ready')
+        print(colored('...DB is ready', 'green'))
     else:
         jsonFileWrite = open(dbFileName, 'wt')
         jsonList = []
         for i in studentList:
             jsonList.append(i.obj())
         jsonFileWrite.write(json.dumps(jsonList))
-        print(prefix+'Saved data successfully!!!')
+        print(colored(prefix+'Saved data successfully!!!', 'green'))
 
 
 while True:
@@ -118,11 +119,11 @@ while True:
         x = createStudent(id_code, name, surname, email, phone)
         if len(x[0]) > 0:
             for i in x[0]:
-                print(i)
-            print('Cannot create student')
+                print(colored(i,'red'))
+            print(colored('Cannot create student!', 'red'))
         else:
             studentList.append(x[1])
-            print('Created student successfully')
+            print(colored('Created student successfully.', 'green'))
         if autosave:
             save_to_db('Autosave: ')
     elif command == 'newton':
@@ -149,16 +150,17 @@ while True:
         _id = input('Enter ID: ')
         for i in _id:
             if not i.isalnum():
-                raise Exception('ID should be integer')
-        found = False
-        for st in studentList:
-            if st.id == int(_id):
-                studentList.remove(st)
-                print('Student deleted.')
-                found = True
-                break
-        if not found:
-            print('Cannot find student.')
+                print(colored('ID should be integer.','red'))
+            else:
+                found = False
+                for st in studentList:
+                    if st.id == int(_id):
+                        studentList.remove(st)
+                        print(colored('Student deleted.','green'))
+                        found = True
+                        break
+                if not found:
+                    print(colored('Cannot find student.','red'))
         if autosave:
             save_to_db('Autosave: ')
     elif command == 'save':
@@ -176,12 +178,12 @@ while True:
     elif command == 'autosave':
         if autosave:
             autosave = False
-            print('Turned off autosave')
+            print(colored('Turned off autosave.','cyan'))
         else:
             autosave = True
-            print('Turned on autosave')
+            print(colored('Turned on autosave.','cyan'))
     elif command == 'exit':
         break
     else:
         if len(command) > 0:
-            print('Cannot find command.')
+            print(colored('Cannot find command!','red'))
