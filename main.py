@@ -170,8 +170,7 @@ while True:
         print_help()
     elif command == 'drop':
         jsonFileWrite = open(dbFileName, 'wt')
-        jsonList = []
-        jsonFileWrite.write(json.dumps(jsonList))
+        jsonFileWrite.write('[]')
     elif command == 'clear':
         os.system(clearString)
     elif command == 'autosave':
