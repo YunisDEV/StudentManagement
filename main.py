@@ -4,8 +4,9 @@ import os
 import time
 from StudentSchema import Student, createStudent
 from prettytable import PrettyTable
+from pyfiglet import Figlet
 
-dbFileName="data.json"
+dbFileName = "data.json"
 
 clearString = None
 
@@ -60,7 +61,8 @@ def print_help():
 
 
 os.system(clearString)
-print('===============Studentify===============')
+# print('===============StudentManager===============')
+print(Figlet(font="slant").renderText('Student\nManager'))
 
 studentList = []
 autosave = False
@@ -89,7 +91,7 @@ print_help()
 
 
 def save_to_db(prefix=''):
-    if not os.path.isfile('./db.json'):
+    if not os.path.isfile('./'+dbFileName):
         print('DB file missing...')
         jsonFileCreate = open(dbFileName, 'xt')
         print('...Created db.json file...')
@@ -106,7 +108,7 @@ def save_to_db(prefix=''):
 
 
 while True:
-    command = input('(Studentify)>> ')
+    command = input('(StudentManager)>> ')
     if command == 'add':
         id_code = input('ID: ')
         name = input('Name: ')
