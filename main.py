@@ -4,6 +4,9 @@ import os
 import time
 from StudentSchema import Student, createStudent
 from prettytable import PrettyTable
+
+dbFileName="data.json"
+
 clearString = None
 
 if os.name == 'nt':
@@ -51,6 +54,7 @@ def print_help():
     print('"save" for save students to db.')
     print('"autosave" for turn on/off auto save.')
     print('"reload" for reload students from db.')
+    print('"drop" for delete all students from db.')
     print('"clear" for clear screen.')
     print('"exit" for exit app.')
 
@@ -63,12 +67,20 @@ autosave = False
 
 
 def read_json_db():
-    jsonFileRead = open('db.json', 'rt')
-    jsonArray = json.loads(jsonFileRead.read())
-    for i in jsonArray:
-        studentList.append(
-            Student(i["id"], i["name"], i["surname"], i["email"], i["phone"]))
-    print('Loaded data successfully!!!')
+    if not os.path.isfile('./'+dbFileName):
+        print('DB file missing...')
+        jsonFileCreate = open(dbFileName, 'xt')
+        print('...Created db.json file...')
+        jsonFileWrite = open(dbFileName, 'wt')
+        jsonFileWrite.write('[]')
+        print('...DB is ready')
+    else:
+        jsonFileRead = open(dbFileName, 'rt')
+        jsonArray = json.loads(jsonFileRead.read())
+        for i in jsonArray:
+            studentList.append(
+                Student(i["id"], i["name"], i["surname"], i["email"], i["phone"]))
+        print('Loaded data successfully!!!')
 
 
 read_json_db()
@@ -77,12 +89,20 @@ print_help()
 
 
 def save_to_db(prefix=''):
-    jsonFileWrite = open('db.json', 'wt')
-    jsonList = []
-    for i in studentList:
-        jsonList.append(i.obj())
-    jsonFileWrite.write(json.dumps(jsonList))
-    print(prefix+'Saved data successfully!!!')
+    if not os.path.isfile('./db.json'):
+        print('DB file missing...')
+        jsonFileCreate = open(dbFileName, 'xt')
+        print('...Created db.json file...')
+        jsonFileWrite = open(dbFileName, 'wt')
+        jsonFileWrite.write('[]')
+        print('...DB is ready')
+    else:
+        jsonFileWrite = open(dbFileName, 'wt')
+        jsonList = []
+        for i in studentList:
+            jsonList.append(i.obj())
+        jsonFileWrite.write(json.dumps(jsonList))
+        print(prefix+'Saved data successfully!!!')
 
 
 while True:
@@ -110,7 +130,7 @@ while True:
         table = PrettyTable()
         table.field_names = ['ID', 'Name', 'Surname', 'Email', 'Phone']
         for i in studentList:
-            if i.id==int(_id):
+            if i.id == int(_id):
                 table.add_row(i.show())
         print(table)
         if autosave:
@@ -146,6 +166,10 @@ while True:
         read_json_db()
     elif command == 'help':
         print_help()
+    elif command == 'drop':
+        jsonFileWrite = open(dbFileName, 'wt')
+        jsonList = []
+        jsonFileWrite.write(json.dumps(jsonList))
     elif command == 'clear':
         os.system(clearString)
     elif command == 'autosave':
