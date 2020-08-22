@@ -63,7 +63,7 @@ read_json_db()
 # başlıq
 print(Figlet(font="slant").renderText('Student\nManager'))
 
-print_help()
+print_help(additionalWait)
 
 
 def save_to_db(prefix=''):
@@ -93,6 +93,10 @@ def save_to_db(prefix=''):
 
 while True:
     command = input('(StudentManager)>> ')
+    # help
+    elif command == 'help':
+        print_help(additionalWait)
+
     # add
     if command == 'add':
         print(colored('INFO: All fields are required', 'cyan'))
@@ -134,10 +138,17 @@ while True:
             if autosave:
                 save_to_db('Autosave: ')
 
-    # TEST ÜÇÜN newton
-    elif command[0:6] == 'newton':
-        cmdArr = command.split(' ')
-        newton(cmdArr[1], cmdArr[2], cmdArr[3])
+    # show
+    elif command == 'show':
+        table = PrettyTable()
+        table.field_names = ['ID', 'Name', 'Surname', 'Email', 'Phone']
+        if additionalWait:
+            newton(3, 'Fetching', 'cyan')
+        for i in studentList:
+            table.add_row(i.show())
+        print(table)
+        if autosave:
+            save_to_db('Autosave: ')
 
     # showone
     elif command == 'showone':
@@ -149,18 +160,6 @@ while True:
         for i in studentList:
             if i.id == int(_id):
                 table.add_row(i.show())
-        print(table)
-        if autosave:
-            save_to_db('Autosave: ')
-
-    # show
-    elif command == 'show':
-        table = PrettyTable()
-        table.field_names = ['ID', 'Name', 'Surname', 'Email', 'Phone']
-        if additionalWait:
-            newton(3, 'Fetching', 'cyan')
-        for i in studentList:
-            table.add_row(i.show())
         print(table)
         if autosave:
             save_to_db('Autosave: ')
@@ -185,18 +184,38 @@ while True:
         if autosave:
             save_to_db('Autosave: ')
 
+    # update
+    elif command[0:6] == 'update':
+        _id = command.split(' ')[1]
+        cmdArr = command.split(' ')[2:]
+        update_object = {}
+        if _id.isnumeric():
+            for i in studentList:
+                if i.id == int(_id):
+                    for key in cmdArr:
+                        update_object[key] = input(
+                            key.capitalize()+" ("+i.obj()[key]+"): ")
+                    i.update(update_object)
+        else:
+            print(colored('ID should be integer', 'red'))
+    
     # save
     elif command == 'save':
         save_to_db()
+
+    # autosave
+    elif command == 'autosave':
+        if autosave:
+            autosave = False
+            print(colored('Turned off autosave.', 'cyan'))
+        else:
+            autosave = True
+            print(colored('Turned on autosave.', 'cyan'))
 
     # reload
     elif command == 'reload':
         studentList = []
         read_json_db()
-
-    # help
-    elif command == 'help':
-        print_help()
 
     # drop
     elif command == 'drop':
@@ -210,18 +229,14 @@ while True:
     elif command == 'clear':
         os.system(clearString)
 
-    # autosave
-    elif command == 'autosave':
-        if autosave:
-            autosave = False
-            print(colored('Turned off autosave.', 'cyan'))
-        else:
-            autosave = True
-            print(colored('Turned on autosave.', 'cyan'))
-
     # exit
     elif command == 'exit':
         break
+
+    # TEST ÜÇÜN newton
+    elif command[0:6] == 'newton':
+        cmdArr = command.split(' ')
+        newton(cmdArr[1], cmdArr[2], cmdArr[3])
 
     # command yoxdursa
     else:

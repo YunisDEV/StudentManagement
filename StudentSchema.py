@@ -12,6 +12,10 @@ class Student:
     def show(self):
         return [str(self.id), self.name, self.surname, self.email, self.phone]
 
+    def update(self, update_data):
+        for key,value in update_data.items():
+            self. = value
+
 
 def is_email(email):
     flagAt = False
@@ -28,7 +32,7 @@ def is_email(email):
 
 def is_phone(phone):
     flag = True
-    if not phone[0:4]=='+994':
+    if not phone[0:4] == '+994':
         flag = False
     return flag
 

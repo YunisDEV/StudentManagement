@@ -42,8 +42,9 @@ def newton(_time, _text, _color):
     os.system(clearString)
 
 
-def print_help():
-    time.sleep(0.5)
+def print_help(additionalWait):
+    if additionalWait:
+        time.sleep(0.5)
     print(colored('Commands:', 'cyan', attrs=['underline']))
     print(colored('"help" for get list of commands.', 'cyan'))
     print(colored('"add" for add new student.', 'cyan'))
