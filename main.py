@@ -111,11 +111,27 @@ def save_to_db(prefix=''):
 while True:
     command = input('(StudentManager)>> ')
     if command == 'add':
-        id_code = input('ID: ')
-        name = input('Name: ')
-        surname = input('Surname: ')
-        email = input('Email: ')
-        phone = input('Phone: ')
+        print(colored('INFO: All fields are required','cyan'))
+        id_code = None
+        while not id_code:
+            id_code = input('ID: ')
+            if id_code: break
+        name = None
+        while not name:
+            name = input('Name: ')
+            if name: break
+        surname = None
+        while not surname:
+            surname = input('Surname: ')
+            if surname: break
+        email = None
+        while not email:
+            email = input('Email: ')
+            if email: break
+        phone = None
+        while not phone:
+            phone = input('Phone: ')
+            if phone: break
         x = createStudent(id_code, name, surname, email, phone)
         if len(x[0]) > 0:
             for i in x[0]:
@@ -148,19 +164,19 @@ while True:
             save_to_db('Autosave: ')
     elif command == 'remove':
         _id = input('Enter ID: ')
-        for i in _id:
-            if not i.isalnum():
-                print(colored('ID should be integer.','red'))
-            else:
-                found = False
-                for st in studentList:
-                    if st.id == int(_id):
-                        studentList.remove(st)
-                        print(colored('Student deleted.','green'))
-                        found = True
-                        break
-                if not found:
-                    print(colored('Cannot find student.','red'))
+        if _id.isnumeric():
+            print(colored('ID should be integer.','red'))
+            found = False
+            for st in studentList:
+                if st.id == int(_id):
+                    studentList.remove(st)
+                    print(colored('Student deleted.','green'))
+                    found = True
+                    break
+            if not found:
+                print(colored('Cannot find student.','red'))
+        else:
+            print(colored('ID should be integer.','red'))
         if autosave:
             save_to_db('Autosave: ')
     elif command == 'save':
