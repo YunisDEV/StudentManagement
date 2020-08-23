@@ -226,6 +226,7 @@ while True:
         if additionalWait:
             newton(1, 'Dropping', 'cyan')
         jsonFileWrite.close()
+        print(colored('Dropped database','green'))
         studentList = []
 
     # clear
